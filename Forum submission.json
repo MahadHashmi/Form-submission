@@ -1,0 +1,331 @@
+{
+  "name": "Forum submission",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "ElectroHub Customer Satisfaction Survey",
+        "formDescription": "Submit form for improving our efficiency of work",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "placeholder": "Jhon"
+            },
+            {
+              "fieldLabel": "Address",
+              "placeholder": "abc, cd, Pakistan"
+            },
+            {
+              "fieldLabel": "Email",
+              "placeholder": "example@gmail.com"
+            },
+            {
+              "fieldLabel": "Phone Number",
+              "placeholder": "03000000000"
+            },
+            {
+              "fieldLabel": "Satisfaction Level",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Satisfied"
+                  },
+                  {
+                    "option": "Normal"
+                  },
+                  {
+                    "option": "Not satisfied"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Suggestion",
+              "fieldName": "Please suggest us wich thing to improve"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0fc2a749-d46f-4235-8483-730d2a871ac8",
+      "name": "On form submission",
+      "webhookId": "4a730dd0-bc41-43c3-8bdb-d1a4a01cb9b3"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1keQhBA5B_IsL37YI27C3rUrJSXmX6ESU9pYF6tmEDIo",
+          "mode": "list",
+          "cachedResultName": "ElectroHub Customer Satisfaction Survey",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1keQhBA5B_IsL37YI27C3rUrJSXmX6ESU9pYF6tmEDIo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1keQhBA5B_IsL37YI27C3rUrJSXmX6ESU9pYF6tmEDIo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $json['Full Name'] }}",
+            "Address": "={{ $json.Address }}",
+            "Email": "={{ $json.Email }}",
+            "Phone Number": "={{ $json['Phone Number'] }}",
+            "Satisfaction Level": "={{ $json['Satisfaction Level'] }}",
+            "Suggestion": "={{ $json['Please suggest us wich thing to improve'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Satisfaction Level",
+              "displayName": "Satisfaction Level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Suggestion",
+              "displayName": "Suggestion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "abe3b7e3-38ee-45fc-b07e-87d53c010149",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1WycRMYRtkUGPeBa",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Append row in sheet').item.json.Email }}",
+        "subject": "={{ $json.Subject }}",
+        "message": "={{ $json.Body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "43638768-8807-4abc-86ec-7093dd207f05",
+      "name": "Send a message",
+      "webhookId": "73273424-deee-4871-8e61-573e1ca5b81f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cuuZPvTQ0THG5K9U",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=name :  {{ $json['Full Name'] }}\naddress : {{ $json.Address }}\nemail : {{ $json.Email }}\nPhone number : {{ $json['Phone Number'] }}\nSatisfaction level : {{ $json['Satisfaction Level'] }}\nSuggestion : {{ $json.Suggestion }}",
+        "options": {
+          "systemMessage": "=You are a professional automated email assistant. Your job is to draft a polite, corporate-grade acknowledgment email to a user who has submitted a form.\n\nThe user's details are provided in the incoming message. \n\nCRITICAL REQUIREMENT: You must respond ONLY with a valid JSON object containing exactly two items: \"subject\" and \"body\". Do not include any introductory text, markdown code blocks (like ```json), or conversational filler. \n\nFormat the \"body\" text professionally, using standard line breaks for paragraphs and clean bullet points for the data.\n\nJSON Structure to follow:\n{\n  \"subject\": \"Thank you for your feedback — Submission Received\",\n  \"body\": \"Dear {{ $json['Full Name'] }},\\n\\nThank you for contacting us. We have successfully received your submission. A member of our team will review your details and get back to you if any further action is required.\\n\\nFor your records, here is a summary of the information you provided:\\n\\n• Address: {{ $json.Address }}\\n• Email: {{ $json.Email }}\\n• Phone Number: {{ $json['Phone Number'] }}\\n• Satisfaction Level: {{ $json['Satisfaction Level'] }}\\n• Suggestion: {{ $json.Suggestion }}\\n\\nBest regards,\\nCustomer Support Team\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "129a8f86-c6ce-4ac0-b995-ccc2b776a768",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        224
+      ],
+      "id": "8f35b88d-9d35-4b93-8e49-a5c6f50806e1",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fcac2fa8-b04a-48d6-a5ea-b0027c324886",
+              "name": "Subject",
+              "value": "={{ JSON.parse($json.output).subject }}",
+              "type": "string"
+            },
+            {
+              "id": "b047ec9e-0599-4a89-aeca-e9fe20f695c2",
+              "name": "Body",
+              "value": "={{ JSON.parse($json.output).body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        944,
+        144
+      ],
+      "id": "f27195ae-566d-4275-b667-cfbe13557fee",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5272fde4-cf1d-4153-9cf0-8831ff2e4f9c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "081c741b61d2e2a2b20a53898fd2c9646725fef3ca257fb1de748a9ae54bb538"
+  },
+  "id": "X0HKqIq9kCSVr8hA",
+  "tags": []
+}
